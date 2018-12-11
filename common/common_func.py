@@ -114,7 +114,7 @@ def init_excel():
     return workbook, worksheet
 
 def write_content_verify_result(result, worksheet, index):
-    if len(result) > 3:
+    if len(result) > 10:
         worksheet.write_string('F' + str(index), 'Pass')
     else:
         worksheet.write_string('F' + str(index), 'Fail')
@@ -125,7 +125,7 @@ def get_app_output(appname):
     base = os.path.dirname(os.path.dirname(__file__))
     command = data['base_dir'] + appname + ' > ' + base + '/temp/content.txt'
     p = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
-    sleep(5)
+    sleep(15)
     os.system('TASKKILL /PID %s /T /F' % p.pid)
 
 def content_verify(app_name, worksheet, index):
@@ -139,79 +139,96 @@ def content_verify(app_name, worksheet, index):
         write_content_verify_result(result, worksheet, index)
 
     elif app_name == 'ColorizedBodyViewer-SFML.exe':
-        result = re.findall(r'\d+\.\d fps \(\d+\.\d ms\)', out_put)
+        # result = re.findall(r'\d+\.\d fps \(\d+\.\d ms\)', out_put)
+        result = re.findall(r'[1-9]\d\.\d fps \(\d+\.\d ms\)', out_put)
         write_content_verify_result(result, worksheet, index)
 
     elif app_name == 'ColorReaderEvent.exe':
-        result = re.findall(r'color frameIndex: \d+  r: \d+    g: \d+    b: \d+', out_put)
+        # result = re.findall(r'color frameIndex: \d+  r: \d+    g: \d+    b: \d+', out_put)
+        result = re.findall(r'color frameIndex: \d+  r: [1-9]\d+    g: [1-9]\d+    b: [1-9]\d+', out_put)
         write_content_verify_result(result, worksheet, index)
 
     elif app_name == 'ColorReaderEventCPP.exe':
-        result = re.findall(r'color frameIndex: \d+ r: \d+ g: \d+ b: \d+', out_put)
+        # result = re.findall(r'color frameIndex: \d+ r: \d+ g: \d+ b: \d+', out_put)
+        result = re.findall(r'color frameIndex: \d+ r: [1-9]\d+ g: [1-9]\d+ b: [1-9]\d+', out_put)
         write_content_verify_result(result, worksheet, index)
 
     elif app_name == 'ColorReaderPoll.exe':
-        result = re.findall(r'color frameIndex: \d+  r: \d+    g: \d+    b: \d+', out_put)
+        # result = re.findall(r'color frameIndex: \d+  r: \d+    g: \d+    b: \d+', out_put)
+        result = re.findall(r'color frameIndex: \d+  r: [1-9]\d+    g: [1-9]\d+    b: [1-9]\d+', out_put)
         write_content_verify_result(result, worksheet, index)
 
     elif app_name == 'DebugHandViewer.exe':
         worksheet.write_string('F' + str(index), '请手动测试')
 
     elif app_name == 'DepthReaderEvent.exe':
-        result = re.findall(r'depth frameIndex:  \d+  value:  \d', out_put)
+        # result = re.findall(r'depth frameIndex:  \d+  value:  \d', out_put)
+        result = re.findall(r'depth frameIndex:  \d+  value:  [1-9]\d+', out_put)
         write_content_verify_result(result, worksheet, index)
 
     elif app_name == 'DepthReaderEventCPP.exe':
-        result = re.findall(r'depth frameIndex: \d+ value: \d+ wX: \d+\.\d+ wY: \d+\.\d+ wZ: \d+\.\d+ dX: \d+\.\d+ dY: \d+\.\d+ dZ: \d+\.\d+', out_put)
+        # result = re.findall(r'depth frameIndex: \d+ value: \d+ wX: \d+\.\d+ wY: \d+\.\d+ wZ: \d+\.\d+ dX: \d+\.\d+ dY: \d+\.\d+ dZ: \d+\.\d+', out_put)
+        result = re.findall(r'depth frameIndex: \d+ value: [1-9]\d+ wX: \d+\.\d+ wY: \d+\.\d+ wZ: [1-9]\d+\.\d+ dX: [1-9]\d+\.\d+ dY: [1-9]\d+\.\d+ dZ: [1-9]\d+\.\d+', out_put)
         write_content_verify_result(result, worksheet, index)
 
     elif app_name == 'DepthReaderPoll.exe':
-        result = re.findall(r'depth frameIndex \d+ value \d+', out_put)
+        # result = re.findall(r'depth frameIndex \d+ value \d+', out_put)
+        result = re.findall(r'depth frameIndex \d+ value [1-9]\d+', out_put)
         write_content_verify_result(result, worksheet, index)
 
     elif app_name == 'HandReader.exe':
         result = re.findall(r'index \d+ active hand count \d+', out_put)
         write_content_verify_result(result, worksheet, index)
-        logging.info(str(out_put))
 
     elif app_name == 'InfraredColorReaderEvent.exe':
-        result = re.findall(r'infrared frameIndex:  \d+  value:  \d+', out_put)
+        # result = re.findall(r'infrared frameIndex:  \d+  value:  \d+', out_put)
+        result1 = re.findall(r'color frameIndex: \d+  r: [1-9]\d+    g: [1-9]\d+    b: [1-9]\d+ ', out_put)
+        result2 = re.findall(r'infrared frameIndex:  \d+  value:  [1-9]\d+', out_put)
+        result = result1[:6] + result2[:6]
         write_content_verify_result(result, worksheet, index)
-        logging.info(str(out_put))
 
     elif app_name == 'InfraredReaderEvent.exe':
-        result = re.findall(r'infrared frameIndex:  \d+  value:  \d+', out_put)
+        # result = re.findall(r'infrared frameIndex:  \d+  value:  \d+', out_put)
+        result = re.findall(r'infrared frameIndex:  \d+  value:  [1-9]\d+', out_put)
         write_content_verify_result(result, worksheet, index)
 
     elif app_name == 'InfraredReaderPoll.exe':
-        result = re.findall(r'infrared frameIndex:  \d+  value:  \d+', out_put)
+        # result = re.findall(r'infrared frameIndex:  \d+  value:  \d+', out_put)
+        result = re.findall(r'infrared frameIndex:  \d+  value:  [1-9]\d+', out_put)
         write_content_verify_result(result, worksheet, index)
 
     elif app_name == 'MaskedColorViewer-SFML.exe':
-        result = re.findall(r'\d+\.\d fps \(\d+\.\d ms\)', out_put)
+        # result = re.findall(r'\d+\.\d fps \(\d+\.\d ms\)', out_put)
+        result = re.findall(r'[1-9]\d+\.\d fps \(\d+\.\d ms\)', out_put)
         write_content_verify_result(result, worksheet, index)
 
     elif app_name == 'MultiSensorViewer-SFML.exe':
-        result = re.findall(r'\d+\.\d fps \(\d+\.\d ms\)', out_put)
+        # result = re.findall(r'\d+\.\d fps \(\d+\.\d ms\)', out_put)
+        result = re.findall(r'[1-9]\d+\.\d fps \(\d+\.\d ms\)', out_put)
         write_content_verify_result(result, worksheet, index)
 
     elif app_name == 'SimpleBodyViewer-SFML.exe':
-        result = re.findall(r'FPS: \d+\.\d \(\d+\.\d+ ms\)', out_put)
+        # result = re.findall(r'FPS: \d+\.\d \(\d+\.\d+ ms\)', out_put)
+        result = re.findall(r'FPS: [1-9]\d+\.\d \(\d+\.\d+ ms\)', out_put)
         write_content_verify_result(result, worksheet, index)
         logging.info(str(out_put))
 
     elif app_name == 'SimpleColorViewer-SFML.exe':
-        result = re.findall(r'\d+\.\d fps \(\d+\.\d ms\)', out_put)
+        # result = re.findall(r'\d+\.\d fps \(\d+\.\d ms\)', out_put)
+        result = re.findall(r'[1-9]\d+\.\d fps \(\d+\.\d ms\)', out_put)
         write_content_verify_result(result, worksheet, index)
 
     elif app_name == 'SimpleDepthViewer-SFML.exe':
-        result = re.findall(r'\d+\.\d fps \(\d+\.\d ms\)', out_put)
+        # result = re.findall(r'\d+\.\d fps \(\d+\.\d ms\)', out_put)
+        result = re.findall(r'[1-9]\d+\.\d fps \(\d+\.\d ms\)', out_put)
         write_content_verify_result(result, worksheet, index)
 
     elif app_name == 'SimpleHandViewer-SFML.exe':
-        result = re.findall(r'\d+\.\d fps \(\d+\.\d ms\)', out_put)
+        # result = re.findall(r'\d+\.\d fps \(\d+\.\d ms\)', out_put)
+        result = re.findall(r'[1-9]\d+\.\d fps \(\d+\.\d ms\)', out_put)
         write_content_verify_result(result, worksheet, index)
 
     elif app_name == 'SimpleStreamViewer-SFML.exe':
-        result = re.findall(r'\d+\.\d fps \(\d+\.\d ms\)', out_put)
+        # result = re.findall(r'\d+\.\d fps \(\d+\.\d ms\)', out_put)
+        result = re.findall(r'[1-9]\d+\.\d fps \(\d+\.\d ms\)', out_put)
         write_content_verify_result(result, worksheet, index)
