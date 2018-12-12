@@ -1,4 +1,5 @@
 base_dir: 'D:/v2.0.13/AstraSDK-v2.0.13-5a10c0cc62-20181122T123011Z-vs2015-win64/bin/'
+tool_base: 'D:/code/sdk2.0_win_project/'
 cpu_interval: 2
-test_time: 15
+test_time: 10
 

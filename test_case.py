@@ -1,5 +1,6 @@
 from common.my_unit import MyUnit
 from common.common_func import create_bat_for_launch, gen_app, launch_app, record_data, close_window,get_screen_shot, init_excel, content_verify, get_app_output
+import unittest
 
 
 class SDKTest(MyUnit):
@@ -15,3 +16,6 @@ class SDKTest(MyUnit):
             get_app_output(app)
             content_verify(app, worksheet, index)
         workbook.close()
+
+if __name__ == '__main__':
+    unittest.main()
