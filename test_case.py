@@ -12,7 +12,7 @@ class SDKTest(MyUnit):
             launch_app()
             record_data(app, index, worksheet)
             get_screen_shot(app)
-            close_window()
+            close_window(app)
             get_app_output(app)
             content_verify(app, worksheet, index)
         workbook.close()

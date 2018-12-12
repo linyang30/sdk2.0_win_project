@@ -1,7 +1,5 @@
 import psutil
 import logging
-import win32api
-import win32con
 from PIL import ImageGrab
 import os
 from time import sleep
@@ -10,6 +8,8 @@ import subprocess
 import time
 import xlsxwriter
 import re
+import win32gui
+import win32con
 
 def get_current_time():
     now = time.strftime('%Y-%m-%d-%H-%M-%S')
@@ -35,13 +35,13 @@ def get_computer_memory_info():
     phymem_percent = str(phymem.percent) + '%'
     return phymem_percent
 
-def close_window():
-    '''使用alt + f4关闭win窗口'''
+def close_window(app):
     logging.info('close_window')
-    win32api.keybd_event(18, 0, 0, 0) #按下alt键
-    win32api.keybd_event(115, 0, 0, 0) #按下f4键
-    win32api.keybd_event(115, 0, win32con.KEYEVENTF_KEYUP, 0) #松开f4键
-    win32api.keybd_event(18, 0, win32con.KEYEVENTF_KEYUP, 0) #松开alt键
+    wndtitle = get_config_data()['base_dir'].replace('/', '\\') + app
+    logging.info('wndtitle: ' + wndtitle)
+    wndclass = "ConsoleWindowClass"
+    wnd = win32gui.FindWindow(wndclass, wndtitle)
+    win32gui.SendMessage(wnd, win32con.WM_CLOSE)
     sleep(5)
 
 
@@ -128,7 +128,7 @@ def get_app_output(appname):
     base = get_config_data()['tool_base']
     command = data['base_dir'] + appname + ' > ' + base + '/temp/content.txt'
     p = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
-    sleep(10)
+    sleep(15)
     os.system('TASKKILL /PID %s /T /F' % p.pid)
 
 def content_verify(app_name, worksheet, index):
